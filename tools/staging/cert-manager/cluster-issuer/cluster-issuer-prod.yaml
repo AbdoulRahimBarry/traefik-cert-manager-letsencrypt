@@ -4,7 +4,7 @@ metadata:
   name: letsencrypt-prod
 spec:
   acme:
-    email: a.barry@telemaque.fr
+    email: your@mail.fr
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: secure-prodkey
