@@ -1,0 +1,8 @@
+# this file does not push in github
+
+.terraform
+.*.swp
+terraform.tfstate.backup
+terraform.tfstate
+.terraform.lock.hcl
+dev.log

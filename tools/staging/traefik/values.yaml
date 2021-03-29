@@ -1,0 +1,10 @@
+additionalArguments:
+  - "--log.level=DEBUG"
+  - "--entrypoints.websecure.http.tls"
+  - "--providers.kubernetesIngress.ingressClass=traefik-cert-manager"
+  - "--ping"
+  - "--metrics.prometheus"
+
+service:
+  spec:
+    externalTrafficPolicy: Local

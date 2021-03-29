@@ -1,0 +1,104 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: whoami
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: whoami
+  namespace: whoami
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: whoami
+  template:
+    metadata:
+      labels:
+        app: whoami
+    spec:
+      containers:
+      - name: whoami
+        image: containous/traefikee-webapp-demo:v2
+        imagePullPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: whoami
+  namespace: whoami
+  labels:
+    app: whoami
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    name: whoami
+  selector:
+    app: whoami
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: whoami-cert
+  namespace: whoami
+spec:
+  commonName: whoami.test.k8s.tlmq.fr
+  secretName: whoami-cert
+  dnsNames:
+    - whoami.test.k8s.tlmq.fr
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: whoami-ingress-https
+  namespace: whoami
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`whoami.test.k8s.tlmq.fr`)
+      kind: Rule
+      services:
+        - name: whoami
+          port: 80
+  tls:
+    secretName: whoami-cert
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: https-only
+  namespace: whoami
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+
+---
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: whoami-ingress-http
+  namespace: whoami
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`whoami.test.k8s.tlmq.fr`)
+      middlewares:
+        - name: https-only
+      kind: Rule
+      services:
+        - name: whoami
+          port: 80
