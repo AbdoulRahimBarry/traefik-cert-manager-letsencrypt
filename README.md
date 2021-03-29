@@ -1,4 +1,4 @@
-# Traefik Cert-manager and Let'Encrypt With Helm Chart Using Terraform
+# Traefik Cert-manager and Let'Encrypt
 
 This project allows you to install Traefik and cert-manger then deploy a website(whoami). After setup, you would finally have a website that you can access with HTTPS over SSL/TLS
 
