@@ -1,20 +1,20 @@
 # Executed objects in order
-apiVersion: cert-manager.io/v1  # 0 ==> Put in the file certicate.yaml
+apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: traefik-cert
   namespace: traefik
 spec:
-  commonName: localhost.test.k8s.tlmq.fr
+  commonName: mycompagny.fr
   secretName: traefik-cert
   dnsNames:
-    - localhost.test.k8s.tlmq.fr
+    - mycompagny.fr
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
 
 ---
-apiVersion: traefik.containo.us/v1alpha1  # 1 ==> Put in the file ingress-route.yaml
+apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: dashboard-https
@@ -23,7 +23,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`localhost.test.k8s.tlmq.fr`)
+    - match: Host(`mycompagny.fr`)
       kind: Rule
       services:
         - name: api@internal
@@ -54,7 +54,7 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`localhost.test.k8s.tlmq.fr`)
+    - match: Host(`mycompagny.fr`)
       kind: Rule
       services:
         - name: api@internal
